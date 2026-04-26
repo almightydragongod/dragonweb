@@ -1,0 +1,2739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DRACONIS — The Dragon Encyclopedia</title>
+  <style>/* ============================================
+   DRACONIS — Main Stylesheet
+   Dark Aesthetic · Fire Theme
+============================================ */
+
+:root {
+  --fire-primary: #ff6600;
+  --fire-bright: #ff9900;
+  --fire-hot: #ffdd00;
+  --ember: #c8a96e;
+  --ember-dark: #8b6a3a;
+  --dark-void: #05020a;
+  --dark-deep: #0a0510;
+  --dark-mid: #120818;
+  --dark-surface: #1a0d25;
+  --dark-card: #110919;
+  --scale-grey: #1e1428;
+  --text-primary: #e8d8c0;
+  --text-secondary: #a8906a;
+  --text-muted: #6a5a48;
+  --accent-gold: #c8a96e;
+  --accent-red: #cc2200;
+  --accent-blue: #4488ff;
+  --border-subtle: rgba(200, 169, 110, 0.15);
+  --border-glow: rgba(200, 169, 110, 0.4);
+  --glow-fire: 0 0 30px rgba(255, 102, 0, 0.4);
+  --glow-ember: 0 0 20px rgba(200, 169, 110, 0.3);
+  --font-display: 'Cinzel Decorative', serif;
+  --font-heading: 'Cinzel', serif;
+  --font-body: 'Rajdhani', sans-serif;
+  --font-italic: 'IM Fell English', serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--dark-void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  cursor: none;
+  overflow-x: hidden;
+}
+
+/* ===== CUSTOM CURSOR ===== */
+.cursor-dragon {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--fire-primary);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s, background 0.2s, border-color 0.2s;
+  mix-blend-mode: screen;
+}
+.cursor-trail {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  background: var(--fire-bright);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  opacity: 0.6;
+  transition: left 0.15s ease, top 0.15s ease;
+}
+
+/* ===== LOADER ===== */
+.loader {
+  position: fixed;
+  inset: 0;
+  background: var(--dark-void);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: opacity 0.8s, visibility 0.8s;
+}
+.loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-inner { text-align: center; }
+.loader-dragon { width: 120px; height: 120px; animation: rotate-loader 3s linear infinite; }
+.loader-bar {
+  width: 200px;
+  height: 2px;
+  background: rgba(200,169,110,0.2);
+  margin: 24px auto 12px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.loader-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--fire-primary), var(--ember));
+  width: 0%;
+  transition: width 0.1s linear;
+}
+.loader-text {
+  font-family: var(--font-heading);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+}
+
+/* ===== NAVIGATION ===== */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 20px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.4s, padding 0.4s, backdrop-filter 0.4s;
+  background: transparent;
+}
+.nav.scrolled {
+  background: rgba(5, 2, 10, 0.92);
+  backdrop-filter: blur(20px);
+  padding: 14px 48px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--ember);
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  cursor: pointer;
+}
+.logo-symbol { font-size: 1.4rem; }
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 36px;
+}
+.nav-links a {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  color: var(--text-secondary);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--fire-primary);
+  transition: width 0.3s;
+}
+.nav-links a:hover { color: var(--ember); }
+.nav-links a:hover::after { width: 100%; }
+.nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+.nav-toggle span { width: 24px; height: 1.5px; background: var(--ember); display: block; transition: 0.3s; }
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 60%, rgba(100, 20, 0, 0.4) 0%, var(--dark-void) 70%);
+}
+#fireCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.7;
+}
+.hero-content {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  max-width: 800px;
+  padding: 0 24px;
+}
+.hero-eyebrow {
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  letter-spacing: 0.4em;
+  color: var(--fire-primary);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: fadeUp 1s 0.5s forwards;
+}
+.hero-title {
+  font-family: var(--font-display);
+  line-height: 1;
+  margin-bottom: 28px;
+}
+.title-line {
+  display: block;
+  font-size: clamp(4rem, 10vw, 8rem);
+  color: transparent;
+  background: linear-gradient(135deg, var(--ember) 0%, var(--fire-primary) 45%, var(--fire-hot) 70%, var(--ember) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0;
+  animation: fadeUp 1s 0.8s forwards;
+  text-shadow: none;
+  filter: drop-shadow(0 0 40px rgba(255, 102, 0, 0.5));
+}
+.title-sub {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: clamp(0.8rem, 2vw, 1.1rem);
+  letter-spacing: 0.3em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-top: 12px;
+  opacity: 0;
+  animation: fadeUp 1s 1.1s forwards;
+}
+.hero-desc {
+  font-family: var(--font-italic);
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+  max-width: 560px;
+  margin: 0 auto 40px;
+  opacity: 0;
+  animation: fadeUp 1s 1.4s forwards;
+}
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 40px;
+  border: 1px solid var(--fire-primary);
+  color: var(--ember);
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.3s;
+  opacity: 0;
+  animation: fadeUp 1s 1.7s forwards;
+}
+.cta-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--fire-primary), var(--fire-bright));
+  transform: translateX(-100%);
+  transition: transform 0.4s;
+  z-index: -1;
+}
+.cta-btn:hover::before { transform: translateX(0); }
+.cta-btn:hover { color: var(--dark-void); border-color: transparent; }
+.cta-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+.scroll-dragon-container {
+  position: absolute;
+  right: -80px;
+  bottom: 0;
+  width: 500px;
+  opacity: 0.85;
+  z-index: 3;
+  transform: translateY(20px);
+  animation: dragonFloat 4s ease-in-out infinite;
+}
+.hero-dragon-svg { width: 100%; filter: drop-shadow(0 0 30px rgba(200,100,0,0.4)); }
+
+.fire-stream { transition: opacity 0.3s; }
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 5;
+  opacity: 0;
+  animation: fadeIn 1s 2.5s forwards;
+}
+.scroll-line {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, var(--fire-primary));
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+.scroll-indicator p {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* ===== SECTIONS COMMON ===== */
+section { position: relative; padding: 120px 0; overflow: hidden; }
+
+.section-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 80px;
+  padding: 0 24px;
+}
+.section-eyebrow {
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  letter-spacing: 0.4em;
+  color: var(--fire-primary);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: block;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  color: var(--ember);
+  line-height: 1.2;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 20px rgba(200,169,110,0.3));
+}
+.section-desc {
+  font-family: var(--font-italic);
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+}
+
+/* Decorative section dividers */
+section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-glow), transparent);
+}
+
+/* ===== CULTURES SECTION ===== */
+.cultures-section { background: linear-gradient(to bottom, var(--dark-void), var(--dark-deep)); }
+
+.cultures-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+.culture-card {
+  background: var(--dark-card);
+  border: 1px solid var(--border-subtle);
+  padding: 40px 32px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s, border-color 0.4s;
+  cursor: default;
+}
+.culture-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--fire-primary), var(--fire-bright));
+  transform: scaleX(0);
+  transition: transform 0.4s;
+}
+.culture-card:hover { transform: translateY(-8px); border-color: var(--border-glow); }
+.culture-card:hover::after { transform: scaleX(1); }
+.card-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,102,0,0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.culture-card:hover .card-glow { opacity: 1; }
+.card-icon { font-size: 3rem; margin-bottom: 16px; }
+.card-badge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  color: var(--fire-primary);
+  border: 1px solid var(--fire-primary);
+  padding: 3px 12px;
+  margin-bottom: 16px;
+}
+.culture-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--ember);
+  margin-bottom: 6px;
+}
+.card-subtitle {
+  font-family: var(--font-italic);
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+.card-content p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 20px; }
+.card-content em { color: var(--ember); font-style: italic; }
+.card-facts { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+.card-facts li { display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: var(--text-secondary); }
+.fact-icon { font-size: 1rem; flex-shrink: 0; }
+
+.card-dna { display: flex; flex-direction: column; gap: 10px; }
+.dna-bar { display: flex; align-items: center; gap: 12px; font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-heading); letter-spacing: 0.1em; }
+.dna-bar span { width: 90px; flex-shrink: 0; }
+.bar-fill {
+  flex: 1;
+  height: 3px;
+  background: rgba(200,169,110,0.15);
+  position: relative;
+  border-radius: 2px;
+}
+.bar-fill::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: var(--pct);
+  background: linear-gradient(90deg, var(--fire-primary), var(--fire-bright));
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1s 0.3s ease;
+}
+.culture-card.visible .bar-fill::after { transform: scaleX(1); }
+
+/* ===== SPECIES SECTION ===== */
+.species-section { background: var(--dark-mid); }
+.species-tabs {
+  display: flex;
+  gap: 4px;
+  max-width: 900px;
+  margin: 0 auto 48px;
+  padding: 0 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.tab-btn {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+}
+.tab-btn:hover { border-color: var(--ember); color: var(--ember); }
+.tab-btn.active { background: linear-gradient(135deg, rgba(255,102,0,0.15), rgba(200,169,110,0.1)); border-color: var(--fire-primary); color: var(--ember); }
+
+.tab-panels { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.species-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+.species-card {
+  background: var(--dark-card);
+  border: 1px solid var(--border-subtle);
+  padding: 32px 24px;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.species-card:hover { border-color: var(--ember-dark); transform: translateY(-4px); }
+.sp-emoji, .sp-img { font-size: 2.8rem; margin-bottom: 16px; display: block; }
+.species-card h4 {
+  font-family: var(--font-heading);
+  color: var(--ember);
+  margin-bottom: 12px;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+}
+.species-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; margin-bottom: 16px; }
+.sp-badge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: var(--fire-primary);
+  border: 1px solid rgba(255,102,0,0.3);
+  padding: 3px 10px;
+  text-transform: uppercase;
+}
+
+/* ===== EVOLUTION SECTION ===== */
+.evolution-section { background: linear-gradient(to bottom, var(--dark-mid), var(--dark-deep)); }
+
+.evolution-timeline { max-width: 1000px; margin: 0 auto; padding: 0 40px; }
+.evo-track { display: flex; flex-direction: column; gap: 0; }
+
+.evo-node {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 0;
+  position: relative;
+}
+.evo-marker { display: flex; flex-direction: column; align-items: center; }
+.evo-circle {
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--fire-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  color: var(--ember);
+  font-size: 0.9rem;
+  background: var(--dark-void);
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  box-shadow: var(--glow-fire);
+}
+.evo-connector {
+  width: 2px;
+  flex: 1;
+  min-height: 40px;
+  background: linear-gradient(to bottom, var(--fire-primary), rgba(255,102,0,0.2));
+  margin: 4px 0;
+}
+.evo-node:last-child .evo-connector { display: none; }
+
+.evo-card {
+  background: var(--dark-card);
+  border: 1px solid var(--border-subtle);
+  padding: 28px 32px;
+  margin-left: 20px;
+  margin-bottom: 32px;
+  position: relative;
+  transition: border-color 0.3s;
+}
+.evo-card:hover { border-color: var(--ember-dark); }
+.featured-evo {
+  border-color: var(--fire-primary);
+  background: linear-gradient(135deg, rgba(255,102,0,0.08), var(--dark-card));
+  box-shadow: var(--glow-fire);
+}
+.evo-creature { font-size: 2rem; margin-bottom: 8px; }
+.evo-era {
+  font-family: var(--font-heading);
+  font-size: 0.68rem;
+  letter-spacing: 0.25em;
+  color: var(--fire-primary);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.evo-card h4 {
+  font-family: var(--font-heading);
+  color: var(--ember);
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+.evo-card p { color: var(--text-secondary); font-size: 0.93rem; margin-bottom: 16px; }
+.evo-stats {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.evo-stats span {
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  background: rgba(200,169,110,0.06);
+  border: 1px solid var(--border-subtle);
+  padding: 4px 12px;
+}
+
+/* SCIENCE BOX */
+.science-box {
+  max-width: 800px;
+  margin: 60px auto 0;
+  padding: 0 40px;
+  background: var(--dark-card);
+  border: 1px solid var(--border-glow);
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.science-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at top, rgba(255,102,0,0.1), transparent 60%);
+}
+.sb-icon { font-size: 2rem; margin-bottom: 16px; display: block; }
+.science-box h3 {
+  font-family: var(--font-display);
+  color: var(--ember);
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+.science-box p { color: var(--text-secondary); margin-bottom: 32px; }
+.science-box strong { color: var(--ember); }
+.bio-diagram {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.bio-part {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 24px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255,102,0,0.05);
+  flex: 1;
+  min-width: 120px;
+}
+.bp-icon { font-size: 2rem; }
+.bio-part span { font-family: var(--font-heading); font-size: 0.72rem; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; text-align: center; }
+.bio-arrow { font-size: 1.5rem; color: var(--fire-primary); flex-shrink: 0; }
+
+/* ===== POLYMORPHISM SECTION ===== */
+.polymorphism-section { background: var(--dark-void); }
+
+.poly-container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+.poly-stages {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  margin-bottom: 48px;
+}
+.poly-stage {
+  padding: 12px 32px;
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.poly-stage:hover { color: var(--ember); }
+.poly-stage.active {
+  background: linear-gradient(135deg, rgba(255,102,0,0.15), rgba(200,169,110,0.08));
+  border-color: var(--fire-primary);
+  color: var(--ember);
+}
+
+.poly-display { display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px; align-items: start; }
+
+.skeleton-panel { display: none; position: relative; }
+.skeleton-panel.active { display: block; }
+.skeleton-svg {
+  width: 100%;
+  background: rgba(10, 5, 16, 0.5);
+  border: 1px solid var(--border-subtle);
+  padding: 20px;
+  max-height: 580px;
+}
+.skel-labels { position: absolute; inset: 0; pointer-events: none; }
+.skel-label {
+  position: absolute;
+  font-family: var(--font-heading);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.poly-info { padding-top: 20px; }
+.poly-info h3 {
+  font-family: var(--font-display);
+  color: var(--ember);
+  font-size: 1.6rem;
+  margin-bottom: 32px;
+}
+.poly-steps { display: flex; flex-direction: column; gap: 28px; }
+.poly-step {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 20px;
+  align-items: start;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.poly-step:last-child { border-bottom: none; }
+.ps-num {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: rgba(200,169,110,0.2);
+  line-height: 1;
+  padding-top: 4px;
+}
+.ps-text h4 {
+  font-family: var(--font-heading);
+  color: var(--ember);
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+}
+.ps-text p { color: var(--text-secondary); font-size: 0.9rem; }
+.ps-text em { color: var(--fire-primary); font-style: italic; }
+
+/* ===== MYTHICAL SECTION ===== */
+.mythical-section { background: linear-gradient(to bottom, var(--dark-deep), var(--dark-void)); }
+
+.mythical-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+.myth-card {
+  background: var(--dark-card);
+  border: 1px solid var(--border-subtle);
+  padding: 36px 28px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s, border-color 0.4s;
+}
+.myth-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 0.4s;
+}
+.myth-card:hover { transform: translateY(-6px); border-color: rgba(200,169,110,0.3); }
+.myth-card:hover::before { transform: scaleX(1); }
+.myth-symbol { font-size: 2.5rem; margin-bottom: 16px; }
+.myth-card h4 {
+  font-family: var(--font-heading);
+  color: var(--ember);
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+.myth-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; margin-bottom: 20px; }
+.myth-origin {
+  font-family: var(--font-heading);
+  font-size: 0.62rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent, var(--fire-primary));
+  border: 1px solid currentColor;
+  display: inline-block;
+  padding: 3px 10px;
+  opacity: 0.7;
+}
+
+/* ===== FOOTER ===== */
+.site-footer {
+  background: var(--dark-void);
+  border-top: 1px solid var(--border-subtle);
+  padding: 48px 40px;
+  text-align: center;
+}
+.footer-dragon svg { width: 100%; max-width: 600px; margin: 0 auto 16px; }
+.footer-credit {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* ===== SCROLL REVEAL ===== */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s, transform 0.8s; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .cultures-grid { grid-template-columns: 1fr 1fr; }
+  .mythical-grid { grid-template-columns: 1fr 1fr; }
+  .poly-display { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .nav { padding: 16px 24px; }
+  .nav.scrolled { padding: 12px 24px; }
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+  .cultures-grid { grid-template-columns: 1fr; padding: 0 20px; }
+  .mythical-grid { grid-template-columns: 1fr; padding: 0 20px; }
+  .species-tabs { padding: 0 20px; }
+  .tab-panels { padding: 0 20px; }
+  .scroll-dragon-container { display: none; }
+  .evolution-timeline { padding: 0 20px; }
+  .science-box { padding: 32px 24px; }
+  .poly-container { padding: 0 20px; }
+  .section-header { padding: 0 20px; }
+  .bio-diagram { flex-direction: column; }
+}
+
+/* ===== PARTICLE STARS (background) ===== */
+.star-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.star {
+  position: absolute;
+  background: var(--ember);
+  border-radius: 50%;
+  animation: twinkle var(--dur) var(--delay) ease-in-out infinite;
+}
+</style>
+  <style>/* ============================================
+   DRACONIS — Animations CSS
+============================================ */
+
+/* ===== KEYFRAMES ===== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes dragonFloat {
+  0%, 100% { transform: translateY(20px) rotate(-2deg); }
+  50% { transform: translateY(-5px) rotate(2deg); }
+}
+@keyframes fireFlicker {
+  0%, 100% { opacity: 0.8; transform: scaleX(1); }
+  25% { opacity: 1; transform: scaleX(1.05); }
+  75% { opacity: 0.7; transform: scaleX(0.95); }
+}
+@keyframes rotate-loader {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.8); transform-origin: top; }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: var(--max-op, 0.6); transform: scale(1.3); }
+}
+@keyframes embersRise {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-150px) scale(0.3); }
+}
+@keyframes scaleGlow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+@keyframes goldShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes fireBreath {
+  0% { stroke-dashoffset: 1000; opacity: 0; }
+  10% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes pulseRing {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2); opacity: 0; }
+}
+@keyframes morphSkeleton {
+  0% { opacity: 0; transform: scale(0.97); filter: blur(3px); }
+  100% { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(200,169,110,0.15); box-shadow: none; }
+  50% { border-color: rgba(255,102,0,0.4); box-shadow: 0 0 20px rgba(255,102,0,0.15); }
+}
+@keyframes dragonWingFlap {
+  0%, 100% { transform: skewY(-2deg) scaleY(0.98); }
+  50% { transform: skewY(3deg) scaleY(1.02); }
+}
+@keyframes textGlow {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(255,102,0,0.3)); }
+  50% { filter: drop-shadow(0 0 25px rgba(255,102,0,0.7)); }
+}
+
+/* ===== APPLIED ANIMATIONS ===== */
+
+/* Hero title glow pulse */
+.title-line {
+  animation: fadeUp 1s 0.8s forwards, textGlow 3s 2s ease-in-out infinite;
+}
+
+/* Dragon SVG wings animation */
+.hero-dragon-svg .dragon-body-group path:nth-child(9),
+.hero-dragon-svg .dragon-body-group path:nth-child(10) {
+  transform-origin: 230px 190px;
+  animation: dragonWingFlap 3s ease-in-out infinite;
+}
+
+/* Culture cards border glow on scroll */
+.culture-card.visible {
+  animation: borderGlow 4s ease-in-out infinite;
+}
+
+/* Skeleton morph */
+.skeleton-panel.active {
+  animation: morphSkeleton 0.5s ease forwards;
+}
+
+/* Myth card hover accent glow */
+.myth-card:hover {
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Fire stream animation on scroll */
+.fire-stream {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+}
+.fire-stream.burning {
+  animation: fireBreath 1.5s ease-out forwards;
+}
+.f1 { animation-delay: 0s !important; }
+.f2 { animation-delay: 0.1s !important; }
+.f3 { animation-delay: 0.2s !important; }
+
+/* Evolution node pulse */
+.evo-circle::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 1px solid var(--fire-primary);
+  border-radius: 50%;
+  animation: pulseRing 2s ease-out infinite;
+  opacity: 0;
+}
+
+/* Tab panel entrance */
+.tab-panel.active {
+  animation: fadeUp 0.4s ease forwards;
+}
+
+/* Section headers */
+.section-title {
+  animation: scaleGlow 4s ease-in-out infinite;
+}
+
+/* Dragon SVG ember particle positions */
+.ember-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--fire-bright);
+  border-radius: 50%;
+  animation: embersRise var(--dur) var(--delay) ease-out infinite;
+  pointer-events: none;
+}
+
+/* Nav logo shimmer */
+.logo-text {
+  background: linear-gradient(270deg, var(--ember), var(--fire-primary), var(--fire-hot), var(--ember));
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: goldShimmer 5s ease infinite;
+}
+
+/* CTA button pulse ring */
+.cta-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--fire-primary);
+  animation: pulseRing 2s ease-out infinite;
+}
+
+/* Poly stage active indicator */
+.poly-stage.active::before {
+  content: '▶';
+  margin-right: 8px;
+  color: var(--fire-primary);
+  font-size: 0.6rem;
+}
+
+/* Bar fill animation */
+@keyframes barFill {
+  from { width: 0; }
+  to { width: var(--pct); }
+}
+
+/* Scroll progress line */
+.scroll-line {
+  animation: scrollPulse 2s ease-in-out infinite !important;
+}
+
+/* Loading dragon path draw */
+.dragon-path {
+  stroke-dasharray: 800;
+  stroke-dashoffset: 800;
+  animation: fireBreath 2s ease forwards;
+}
+
+/* Evo card reveal stagger */
+.evo-node:nth-child(1) .evo-card { transition-delay: 0.1s; }
+.evo-node:nth-child(2) .evo-card { transition-delay: 0.2s; }
+.evo-node:nth-child(3) .evo-card { transition-delay: 0.3s; }
+.evo-node:nth-child(4) .evo-card { transition-delay: 0.4s; }
+.evo-node:nth-child(5) .evo-card { transition-delay: 0.5s; }
+
+/* Myth card stagger reveal */
+.myth-card:nth-child(1) { transition-delay: 0.05s; }
+.myth-card:nth-child(2) { transition-delay: 0.1s; }
+.myth-card:nth-child(3) { transition-delay: 0.15s; }
+.myth-card:nth-child(4) { transition-delay: 0.2s; }
+.myth-card:nth-child(5) { transition-delay: 0.25s; }
+.myth-card:nth-child(6) { transition-delay: 0.3s; }
+
+/* Shimmer line on hover */
+@keyframes shimmerLine {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+.culture-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+  transition: none;
+}
+.culture-card:hover::before {
+  animation: shimmerLine 0.6s ease forwards;
+}
+</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;900&family=IM+Fell+English:ital@0;1&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor-dragon" id="cursor"></div>
+  <div class="cursor-trail" id="cursorTrail"></div>
+
+  <!-- LOADER -->
+  <div class="loader" id="loader">
+    <div class="loader-inner">
+      <svg class="loader-dragon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <path class="dragon-path" d="M100,20 C60,20 30,50 30,90 C30,130 60,160 100,180 C140,160 170,130 170,90 C170,50 140,20 100,20Z" fill="none" stroke="#c8a96e" stroke-width="1"/>
+        <text x="100" y="108" text-anchor="middle" fill="#c8a96e" font-size="14" font-family="Cinzel">DRACONIS</text>
+      </svg>
+      <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
+      <p class="loader-text">Awakening the Ancient Fire...</p>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <nav class="nav" id="nav">
+    <div class="nav-logo">
+      <span class="logo-symbol">🐉</span>
+      <span class="logo-text">DRACONIS</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#hero">Origin</a></li>
+      <li><a href="#cultures">Cultures</a></li>
+      <li><a href="#species">Species</a></li>
+      <li><a href="#evolution">Evolution</a></li>
+      <li><a href="#polymorphism">Polymorphism</a></li>
+      <li><a href="#mythical">Mythical Kin</a></li>
+    </ul>
+    <div class="nav-toggle" id="navToggle">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <canvas id="fireCanvas"></canvas>
+    </div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">THE ULTIMATE CODEX</p>
+      <h1 class="hero-title">
+        <span class="title-line" data-text="DRACONIS">DRACONIS</span>
+        <span class="title-sub">Encyclopedia of Dragonkind</span>
+      </h1>
+      <p class="hero-desc">From the fire-mountains of ancient China to the Norse frost peaks — explore the complete scientific, mythological, and anatomical study of Earth's most magnificent apex predators.</p>
+      <a href="#cultures" class="cta-btn">
+        <span>Enter the Codex</span>
+        <svg viewBox="0 0 24 24"><path d="M12 4l8 8-8 8M4 12h16"/></svg>
+      </a>
+    </div>
+    <div class="scroll-dragon-container" id="scrollDragon">
+      <svg class="hero-dragon-svg" id="heroSvgDragon" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+        <!-- Dragon body -->
+        <g class="dragon-body-group">
+          <!-- Main body -->
+          <ellipse cx="250" cy="220" rx="120" ry="60" fill="#1a0a00" stroke="#8b3a00" stroke-width="2"/>
+          <!-- Neck -->
+          <path d="M180,190 Q160,150 170,110 Q180,80 200,70" fill="none" stroke="#8b3a00" stroke-width="18" stroke-linecap="round"/>
+          <path d="M180,190 Q160,150 170,110 Q180,80 200,70" fill="none" stroke="#2a1000" stroke-width="14" stroke-linecap="round"/>
+          <!-- Head -->
+          <ellipse cx="215" cy="58" rx="38" ry="28" fill="#1a0a00" stroke="#8b3a00" stroke-width="2"/>
+          <!-- Snout -->
+          <path d="M215,58 Q240,52 255,60 Q262,65 258,72 Q250,78 235,74 Q220,70 215,58Z" fill="#2a1200" stroke="#8b3a00" stroke-width="1.5"/>
+          <!-- Nostril -->
+          <ellipse cx="250" cy="64" rx="5" ry="3" fill="#ff4400" opacity="0.8"/>
+          <ellipse cx="238" cy="66" rx="4" ry="3" fill="#ff4400" opacity="0.6"/>
+          <!-- Eye -->
+          <ellipse cx="205" cy="50" rx="10" ry="8" fill="#000"/>
+          <ellipse cx="205" cy="50" rx="8" ry="6" fill="#ff6600"/>
+          <ellipse cx="205" cy="50" rx="3" ry="5" fill="#000"/>
+          <ellipse cx="207" cy="48" rx="2" ry="1.5" fill="#fff" opacity="0.6"/>
+          <!-- Horns -->
+          <path d="M195,38 Q185,18 190,10" stroke="#c8a96e" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M210,32 Q205,15 208,8" stroke="#c8a96e" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <!-- Spines along back -->
+          <path d="M200,68 Q185,55 175,35 Q168,20 170,10" stroke="#8b3a00" stroke-width="6" fill="none"/>
+          <path d="M195,80 L185,60 M205,76 L197,55 M215,72 L210,50" stroke="#8b3a00" stroke-width="3" stroke-linecap="round"/>
+          <!-- Wings -->
+          <path d="M230,190 Q170,120 80,100 Q40,95 30,120 Q60,130 100,160 Q150,190 200,200Z" fill="#1a0800" stroke="#8b3a00" stroke-width="1.5" opacity="0.9"/>
+          <path d="M230,190 Q170,120 80,100" stroke="#5a1a00" stroke-width="1" opacity="0.5"/>
+          <path d="M230,190 Q190,140 120,125" stroke="#5a1a00" stroke-width="1" opacity="0.4"/>
+          <path d="M230,190 Q200,150 155,145" stroke="#5a1a00" stroke-width="1" opacity="0.3"/>
+          <path d="M270,190 Q330,120 420,100 Q460,95 470,120 Q440,130 400,160 Q350,190 300,200Z" fill="#1a0800" stroke="#8b3a00" stroke-width="1.5" opacity="0.9"/>
+          <!-- Tail -->
+          <path d="M370,240 Q420,250 450,270 Q470,285 460,300 Q440,310 420,295 Q400,280 385,265 Q375,255 370,240Z" fill="#1a0a00" stroke="#8b3a00" stroke-width="1.5"/>
+          <!-- Legs -->
+          <path d="M200,265 Q185,285 180,310 Q185,320 195,315 Q205,300 210,275Z" fill="#1a0a00" stroke="#8b3a00" stroke-width="1.5"/>
+          <path d="M300,265 Q315,285 320,310 Q315,320 305,315 Q295,300 290,275Z" fill="#1a0a00" stroke="#8b3a00" stroke-width="1.5"/>
+          <!-- Claws -->
+          <path d="M178,314 L172,325 M188,316 L184,328 M196,315 L194,328" stroke="#c8a96e" stroke-width="2" stroke-linecap="round"/>
+          <path d="M322,314 L328,325 M312,316 L316,328 M304,315 L306,328" stroke="#c8a96e" stroke-width="2" stroke-linecap="round"/>
+          <!-- Scales texture -->
+          <circle cx="240" cy="210" r="8" fill="none" stroke="#8b3a00" stroke-width="0.8" opacity="0.5"/>
+          <circle cx="255" cy="220" r="8" fill="none" stroke="#8b3a00" stroke-width="0.8" opacity="0.5"/>
+          <circle cx="270" cy="210" r="8" fill="none" stroke="#8b3a00" stroke-width="0.8" opacity="0.5"/>
+          <circle cx="225" cy="225" r="8" fill="none" stroke="#8b3a00" stroke-width="0.8" opacity="0.5"/>
+          <circle cx="285" cy="225" r="8" fill="none" stroke="#8b3a00" stroke-width="0.8" opacity="0.5"/>
+        </g>
+        <!-- FIRE from mouth - animated via JS -->
+        <g class="fire-group" id="dragonFire">
+          <path class="fire-stream f1" d="M258,65 Q290,55 330,45 Q360,38 390,30 Q420,22 445,18" stroke="url(#fireGrad1)" stroke-width="12" fill="none" stroke-linecap="round" opacity="0"/>
+          <path class="fire-stream f2" d="M258,68 Q295,62 335,58 Q370,55 400,50 Q430,45 455,40" stroke="url(#fireGrad2)" stroke-width="8" fill="none" stroke-linecap="round" opacity="0"/>
+          <path class="fire-stream f3" d="M258,62 Q285,48 315,35 Q345,22 370,15 Q400,8 430,5" stroke="url(#fireGrad3)" stroke-width="5" fill="none" stroke-linecap="round" opacity="0"/>
+        </g>
+        <defs>
+          <linearGradient id="fireGrad1" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ff2200"/>
+            <stop offset="50%" stop-color="#ff8800"/>
+            <stop offset="100%" stop-color="#ffdd00" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="fireGrad2" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ff6600"/>
+            <stop offset="50%" stop-color="#ffaa00"/>
+            <stop offset="100%" stop-color="#fff44f" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="fireGrad3" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ffaa00"/>
+            <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-line"></div>
+      <p>Scroll to Explore</p>
+    </div>
+  </section>
+
+  <!-- CULTURES SECTION -->
+  <section class="cultures-section" id="cultures">
+    <div class="section-header">
+      <p class="section-eyebrow">Global Mythology</p>
+      <h2 class="section-title">Dragons Across Civilizations</h2>
+      <p class="section-desc">Every great civilization bore witness to the dragon — in fire, in water, in the stars themselves.</p>
+    </div>
+    <div class="cultures-grid">
+      <!-- Chinese Dragon -->
+      <div class="culture-card" data-culture="chinese">
+        <div class="card-glow"></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 100 100" class="culture-svg">
+            <text x="50" y="65" text-anchor="middle" font-size="60">🐉</text>
+          </svg>
+        </div>
+        <div class="card-badge">CHINA</div>
+        <h3>Chinese Dragon</h3>
+        <p class="card-subtitle">Lóng 龍 — Celestial Serpent of Heaven</p>
+        <div class="card-content">
+          <p>The <em>Lóng</em> is revered as the ultimate symbol of imperial power, cosmic harmony and divine luck. Unlike Western counterparts, Chinese dragons are benevolent, controlling rainfall, rivers and seas. They possess nine anatomical attributes: camel head, deer horns, rabbit eyes, bull ears, snake neck, frog belly, carp scales, eagle claws, and tiger paws.</p>
+          <ul class="card-facts">
+            <li><span class="fact-icon">⚡</span> Controls lightning, wind and rain</li>
+            <li><span class="fact-icon">🌊</span> Guards underwater palaces</li>
+            <li><span class="fact-icon">👑</span> Symbol of the Emperor's divine right</li>
+            <li><span class="fact-icon">🔮</span> Holds a flaming pearl of wisdom</li>
+          </ul>
+        </div>
+        <div class="card-dna">
+          <div class="dna-bar" style="--pct:92%"><span>Benevolence</span><div class="bar-fill"></div></div>
+          <div class="dna-bar" style="--pct:85%"><span>Power</span><div class="bar-fill"></div></div>
+          <div class="dna-bar" style="--pct:78%"><span>Intelligence</span><div class="bar-fill"></div></div>
+        </div>
+      </div>
+
+      <!-- Indian Dragon -->
+      <div class="culture-card" data-culture="indian">
+        <div class="card-glow"></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 100 100" class="culture-svg">
+            <text x="50" y="65" text-anchor="middle" font-size="60">🐍</text>
+          </svg>
+        </div>
+        <div class="card-badge">INDIA</div>
+        <h3>Naga & Vritra</h3>
+        <p class="card-subtitle">नाग — Cosmic Serpent Dragon</p>
+        <div class="card-content">
+          <p>Indian dragon mythology centers on the <em>Naga</em> — half-human, half-cobra beings of immense divine power — and <em>Vritra</em>, the great cosmic serpent-dragon slain by Indra to release the world's waters. Nagas guard treasures and sacred springs; they are beings of tremendous wisdom who sometimes take human form and intermarry with mortals.</p>
+          <ul class="card-facts">
+            <li><span class="fact-icon">💎</span> Guardians of treasures & secret knowledge</li>
+            <li><span class="fact-icon">🌿</span> Connected to water, earth and fertility</li>
+            <li><span class="fact-icon">🧬</span> Can shapeshift into human form</li>
+            <li><span class="fact-icon">☀️</span> Vritra blocked the cosmic rivers of heaven</li>
+          </ul>
+        </div>
+        <div class="card-dna">
+          <div class="dna-bar" style="--pct:80%"><span>Wisdom</span><div class="bar-fill"></div></div>
+          <div class="dna-bar" style="--pct:88%"><span>Mysticism</span><div class="bar-fill"></div></div>
+          <div class="dna-bar" style="--pct:70%"><span>Aggression</span><div class="bar-fill"></div></div>
+        </div>
+      </div>
+
+      <!-- Western Dragon -->
+      <div class="culture-card" data-culture="western">
+        <div class="card-glow"></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 100 100" class="culture-svg">
+            <text x="50" y="65" text-anchor="middle" font-size="60">🔥</text>
+          </svg>
+        </div>
+        <div class="card-badge">ENGLAND</div>
+        <h3>English Dragon</h3>
+        <p class="card-subtitle">Draco — Fire Drake of the Isles</p>
+        <div class="card-content">
+          <p>The English/European dragon is the quintessential apex predator — a four-legged, winged reptilian beast breathing devastating fire. From Beowulf's hoard-guardian to the Red Dragon of Wales, these creatures embody primal chaos, greed and raw destructive power. They are intelligent treasure-hoarders of fearsome cunning.</p>
+          <ul class="card-facts">
+            <li><span class="fact-icon">🔥</span> Breathes fire hot enough to melt steel</li>
+            <li><span class="fact-icon">🏰</span> Sleeps atop mountains of gold treasure</li>
+            <li><span class="fact-icon">🛡️</span> Scales harder than plate armour</li>
+            <li><span class="fact-icon">🧠</span> Possesses vast, ancient cunning</li>
+          </ul>
+        </div>
+        <div class="card-dna">
+          <div class="dna-bar" style="--pct:97%"><span>Aggression</span><div class="bar-fill"></div></div>
+          <div class="dna-bar" style="--pct:90%"><span>Fire Power</span><div class="bar-fill"></div></div>
+          <div class="dna-bar" style="--pct:75%"><span>Intelligence</span><div class="bar-fill"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPECIES / RELATED SECTION -->
+  <section class="species-section" id="species">
+    <div class="section-header">
+      <p class="section-eyebrow">Taxonomy & Kin</p>
+      <h2 class="section-title">Dragon Species & Related Entities</h2>
+    </div>
+    <div class="species-tabs">
+      <button class="tab-btn active" data-tab="emoji">🔥 Emoji Lore</button>
+      <button class="tab-btn" data-tab="flying">🐍 Flying Snakes</button>
+      <button class="tab-btn" data-tab="wyvern">⚔️ Wyverns</button>
+      <button class="tab-btn" data-tab="leviathan">🌊 Leviathan</button>
+    </div>
+    <div class="tab-panels">
+      <div class="tab-panel active" id="tab-emoji">
+        <div class="species-grid">
+          <div class="species-card">
+            <div class="sp-emoji">🐉</div>
+            <h4>Dragon Face</h4>
+            <p>Unicode U+1F409. Added in Emoji 1.0 (2015). Represents the traditional Eastern serpentine dragon with flowing whiskers — culturally defaulting to the Chinese Lóng form across all platforms.</p>
+            <div class="sp-badge">Eastern Origin</div>
+          </div>
+          <div class="species-card">
+            <div class="sp-emoji">🔥</div>
+            <h4>Fire Emoji</h4>
+            <p>Unicode U+1F525. The fire emoji is inseparable from dragon iconography — representing the primal breath weapon. In digital culture, it symbolizes intensity, passion and literal dragon fire.</p>
+            <div class="sp-badge">Universal</div>
+          </div>
+          <div class="species-card">
+            <div class="sp-emoji">🐲</div>
+            <h4>Dragon Head</h4>
+            <p>Unicode U+1F432. The side-profile dragon head emoji — typically depicted in green or jade tones referencing Chinese porcelain dragon art. Used universally across gaming and fantasy contexts.</p>
+            <div class="sp-badge">Cultural Icon</div>
+          </div>
+          <div class="species-card">
+            <div class="sp-emoji">⚡</div>
+            <h4>Thunder Dragon</h4>
+            <p>The Bhutanese flag dragon — <em>Druk</em> — is a thunder dragon. In Dzongkha, Bhutan is called "Druk Yul" (Land of the Thunder Dragon). Lightning is the dragon's secondary weapon after fire.</p>
+            <div class="sp-badge">Himalayan</div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-flying">
+        <div class="species-grid">
+          <div class="species-card">
+            <div class="sp-img">🐍</div>
+            <h4>Chrysopelea — Flying Snake</h4>
+            <p>The genus <em>Chrysopelea</em> (Paradise Tree Snake) can glide up to 10 meters by flattening its body into a concave shape, creating an aerodynamic wing profile. Scientists believe early dragon myths in Southeast Asia arose from eyewitness accounts of these creatures launching from treetops.</p>
+            <div class="sp-badge">Real Creature</div>
+          </div>
+          <div class="species-card">
+            <div class="sp-img">🦎</div>
+            <h4>Draco Volans — Gliding Lizard</h4>
+            <p>The <em>Draco volans</em> is literally named "flying dragon." It extends its elongated ribs to create wing membranes. Found across Southeast Asia, its dramatically coloured wing-flaps likely inspired miniature dragon lore across the region.</p>
+            <div class="sp-badge">Scientific</div>
+          </div>
+          <div class="species-card">
+            <div class="sp-img">🌿</div>
+            <h4>Basiliscus — Jesus Christ Lizard</h4>
+            <p>The Basilisk lizard — ancestor of the mythological basilisk — can run across water surfaces. Medieval scholars believed it to be a dragon-kin, a "king of serpents." Its crown-like crest and water-walking ability cemented its legendary status.</p>
+            <div class="sp-badge">Mythic Connection</div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-wyvern">
+        <div class="species-grid">
+          <div class="species-card">
+            <div class="sp-img">⚔️</div>
+            <h4>Wyvern</h4>
+            <p>A wyvern is anatomically distinct from a true dragon: it has only two legs (not four), a barbed or club-like tail, and may or may not breathe fire. In heraldry, the wyvern symbolizes strength and valor. It is the true ancestor of the modern fantasy "dragon" in Western culture.</p>
+            <div class="sp-badge">Heraldic</div>
+          </div>
+          <div class="species-card">
+            <div class="sp-img">🔱</div>
+            <h4>Worm / Wyrm</h4>
+            <p>The Old English <em>Wyrm</em> (worm) referred to any great serpentine monster. Wyrms are legless, wingless, and immensely large — more like the great cosmic serpents of Norse mythology. They gnaw at the roots of the World Tree.</p>
+            <div class="sp-badge">Norse</div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-leviathan">
+        <div class="species-grid">
+          <div class="species-card">
+            <div class="sp-img">🌊</div>
+            <h4>Leviathan</h4>
+            <p>The biblical Leviathan — described in Job 41 as breathing fire, with impenetrable scales, smoke pouring from its nostrils — is textually the closest ancient scripture comes to a full dragon description. Scholars classify it as an oceanic dragon archetype common across Semitic mythology.</p>
+            <div class="sp-badge">Biblical</div>
+          </div>
+          <div class="species-card">
+            <div class="sp-img">🧊</div>
+            <h4>Jörmungandr — The World Serpent</h4>
+            <p>Norse mythology's ocean dragon — so vast it encircles the entire Earth and bites its own tail (the Ouroboros). Son of Loki, destined to battle Thor at Ragnarök. The largest dragon-kin in any mythology, its body literally defines the boundary of the world.</p>
+            <div class="sp-badge">Norse Cosmic</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVOLUTION SECTION -->
+  <section class="evolution-section" id="evolution">
+    <div class="section-header">
+      <p class="section-eyebrow">Cryptozoological Theory</p>
+      <h2 class="section-title">Lizard Man — The Path to Dragon</h2>
+      <p class="section-desc">A speculative evolutionary timeline from primordial reptile to apex draconic being.</p>
+    </div>
+    <div class="evolution-timeline">
+      <div class="evo-track">
+        <!-- Stage 1 -->
+        <div class="evo-node" data-stage="1">
+          <div class="evo-marker">
+            <div class="evo-circle">1</div>
+            <div class="evo-connector"></div>
+          </div>
+          <div class="evo-card">
+            <div class="evo-creature">🦎</div>
+            <div class="evo-era">430 Million Years Ago</div>
+            <h4>Proto-Reptile Ancestor</h4>
+            <p>Early tetrapod emerges from ocean. Four limbs, scaly skin, cold-blooded metabolism. The deep ancestor of all modern reptiles and the mythological foundation of dragon biology. Brain size: walnut.</p>
+            <div class="evo-stats">
+              <span>Length: 1.2m</span>
+              <span>Brain: 3g</span>
+              <span>Lifespan: 15yr</span>
+            </div>
+          </div>
+        </div>
+        <!-- Stage 2 -->
+        <div class="evo-node" data-stage="2">
+          <div class="evo-marker">
+            <div class="evo-circle">2</div>
+            <div class="evo-connector"></div>
+          </div>
+          <div class="evo-card">
+            <div class="evo-creature">🐊</div>
+            <div class="evo-era">230 Million Years Ago</div>
+            <h4>Archosaur — The Ruling Reptile</h4>
+            <p>The archosaur lineage produces crocodilians, pterosaurs and dinosaurs. Bipedalism begins. Increased lung capacity. First hints of proto-thermoregulation. Territorial behavior and hoarding instinct emerge.</p>
+            <div class="evo-stats">
+              <span>Length: 6m</span>
+              <span>Brain: 45g</span>
+              <span>Lifespan: 80yr</span>
+            </div>
+          </div>
+        </div>
+        <!-- Stage 3 -->
+        <div class="evo-node" data-stage="3">
+          <div class="evo-marker">
+            <div class="evo-circle">3</div>
+            <div class="evo-connector"></div>
+          </div>
+          <div class="evo-card">
+            <div class="evo-creature">🦕</div>
+            <div class="evo-era">150 Million Years Ago</div>
+            <h4>Winged Pterosaur — First Flight</h4>
+            <p>Pterosaurs develop enormous wing-spans via elongated 4th finger. Quetzalcoatlus reaches 12m wingspan — the largest flying creature ever. This is the evolutionary origin of dragon wings: elongated forelimb digits creating membrane flight surfaces.</p>
+            <div class="evo-stats">
+              <span>Wingspan: 12m</span>
+              <span>Weight: 200kg</span>
+              <span>Altitude: 4,500m</span>
+            </div>
+          </div>
+        </div>
+        <!-- Stage 4 -->
+        <div class="evo-node" data-stage="4">
+          <div class="evo-marker">
+            <div class="evo-circle">4</div>
+            <div class="evo-connector"></div>
+          </div>
+          <div class="evo-card">
+            <div class="evo-creature">🐉</div>
+            <div class="evo-era">Cryptozoological Hypothesis</div>
+            <h4>Proto-Dragon — Lizard Man Stage</h4>
+            <p>Theoretical intermediate: a highly intelligent, semi-bipedal reptile with rudimentary wings, enhanced cognition, and a unique combustion gland producing methane gas — ignited via a bio-electric spark organ. Size equivalent to a Tyrannosaurus but with flight capability and primate-level intelligence.</p>
+            <div class="evo-stats">
+              <span>Length: 18m</span>
+              <span>IQ-equiv: ~85</span>
+              <span>Lifespan: 400yr</span>
+            </div>
+          </div>
+        </div>
+        <!-- Stage 5 -->
+        <div class="evo-node" data-stage="5">
+          <div class="evo-marker">
+            <div class="evo-circle">5</div>
+          </div>
+          <div class="evo-card featured-evo">
+            <div class="evo-creature">✨🐉✨</div>
+            <div class="evo-era">Apex Draconic Form</div>
+            <h4>Full Dragon — Apex Predator</h4>
+            <p>The complete dragon form: six limbs (4 legs + 2 wings), multi-chambered hydrogen-producing stomach, piezoelectric ignition in jaw, regenerative scale armor, cortical brain development surpassing primate levels. Lifespan measured in millennia. Capable of vocal synthesis mimicking human speech.</p>
+            <div class="evo-stats">
+              <span>Length: 30m+</span>
+              <span>Lifespan: 10,000yr</span>
+              <span>IQ-equiv: ~160</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fire Biology Box -->
+    <div class="science-box">
+      <div class="sb-icon">🔬</div>
+      <h3>The Biology of Dragon Fire</h3>
+      <p>Theoretical dragon fire biology: Specialised <strong>Hydrogen-Producing Bacteria</strong> in the stomach ferment food into hydrogen gas, stored in a secondary bladder. A <strong>Piezoelectric Crystal Organ</strong> in the lower jaw (analogous to a bio-electric eel organ) generates a spark. The spark ignites the compressed hydrogen stream exhaled through directional jaw channels — producing a focused flame reaching 1,500°C, comparable to a cutting blowtorch.</p>
+      <div class="bio-diagram">
+        <div class="bio-part">
+          <div class="bp-icon">🫁</div>
+          <span>Hydrogen Bladder</span>
+        </div>
+        <div class="bio-arrow">→</div>
+        <div class="bio-part">
+          <div class="bp-icon">⚡</div>
+          <span>Piezo Spark Organ</span>
+        </div>
+        <div class="bio-arrow">→</div>
+        <div class="bio-part">
+          <div class="bp-icon">🔥</div>
+          <span>1500°C Flame</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POLYMORPHISM SECTION -->
+  <section class="polymorphism-section" id="polymorphism">
+    <div class="section-header">
+      <p class="section-eyebrow">Anatomical Science</p>
+      <h2 class="section-title">Polymorphism — Dragon to Human</h2>
+      <p class="section-desc">The skeletal and anatomical transformation of a dragon into its human guise — illustrated through speculative xenobiology.</p>
+    </div>
+
+    <div class="poly-container">
+      <div class="poly-stages">
+        <div class="poly-stage active" data-poly="dragon">Dragon Form</div>
+        <div class="poly-stage" data-poly="transition">Mid-Shift</div>
+        <div class="poly-stage" data-poly="human">Human Form</div>
+      </div>
+      <div class="poly-display">
+        <!-- Dragon Skeleton SVG -->
+        <div class="skeleton-panel active" id="skel-dragon">
+          <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" class="skeleton-svg">
+            <defs>
+              <filter id="glow-gold">
+                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <g filter="url(#glow-gold)" stroke="#c8a96e" fill="none" stroke-width="1.5">
+              <!-- Skull -->
+              <ellipse cx="200" cy="50" rx="40" ry="30"/>
+              <path d="M180,50 L165,70 M220,50 L235,70"/><!-- jaw hinges -->
+              <path d="M165,70 Q200,85 235,70"/><!-- jaw -->
+              <path d="M175,65 L165,80 M185,68 L177,83 M215,68 L223,83 M225,65 L235,80"/><!-- teeth -->
+              <!-- Horns -->
+              <path d="M185,28 Q175,10 180,2"/>
+              <path d="M215,28 Q225,10 220,2"/>
+              <!-- Neck vertebrae -->
+              <path d="M200,78 Q190,100 185,130"/>
+              <ellipse cx="192" cy="95" rx="12" ry="7"/>
+              <ellipse cx="188" cy="113" rx="12" ry="7"/>
+              <!-- Ribcage -->
+              <path d="M185,130 Q200,180 215,130"/><!-- spine arc -->
+              <ellipse cx="200" cy="155" rx="60" ry="50"/>
+              <path d="M155,145 Q125,145 120,165 Q125,185 155,185"/>
+              <path d="M155,150 Q128,150 124,168 Q128,186 155,175"/>
+              <path d="M155,158 Q132,158 129,175 Q133,190 155,182"/>
+              <path d="M245,145 Q275,145 280,165 Q275,185 245,185"/>
+              <path d="M245,150 Q272,150 276,168 Q272,186 245,175"/>
+              <path d="M245,158 Q268,158 271,175 Q267,190 245,182"/>
+              <!-- Pelvis -->
+              <ellipse cx="200" cy="230" rx="50" ry="30"/>
+              <!-- Wing bones -->
+              <path d="M155,140 Q100,110 60,80 Q40,65 30,50"/><!-- left wing primary -->
+              <path d="M60,80 Q55,120 80,160"/><!-- wing secondary -->
+              <path d="M80,160 Q100,180 155,185"/>
+              <path d="M245,140 Q300,110 340,80 Q360,65 370,50"/><!-- right wing -->
+              <path d="M340,80 Q345,120 320,160"/>
+              <path d="M320,160 Q300,180 245,185"/>
+              <!-- Front legs -->
+              <path d="M165,215 Q145,250 135,290"/>
+              <ellipse cx="150" cy="270" rx="8" ry="15"/><!-- knee -->
+              <path d="M135,290 Q128,320 125,345"/>
+              <path d="M125,345 L115,360 M125,345 L120,362 M125,345 L128,362 M125,345 L133,358"/><!-- claws -->
+              <path d="M235,215 Q255,250 265,290"/>
+              <ellipse cx="250" cy="270" rx="8" ry="15"/>
+              <path d="M265,290 Q272,320 275,345"/>
+              <path d="M275,345 L265,360 M275,345 L270,362 M275,345 L278,362 M275,345 L283,358"/>
+              <!-- Tail -->
+              <path d="M200,255 Q230,290 250,330 Q270,370 265,400 Q260,420 245,415"/>
+              <!-- Spine -->
+              <path d="M200,78 L200,255" stroke-dasharray="8,4"/>
+              <!-- Spinal spines -->
+              <path d="M198,100 L185,88 M198,120 L183,107 M200,140 L185,126 M200,160 L183,148 M200,180 L183,170 M200,200 L182,192 M200,220 L181,214"/>
+            </g>
+            <text x="200" y="490" text-anchor="middle" fill="#c8a96e" font-size="12" font-family="Rajdhani">DRACO ANATOMICUS — SKELETON FORM</text>
+          </svg>
+          <div class="skel-labels">
+            <div class="skel-label" style="top:5%;left:5%">Cranial Horns →</div>
+            <div class="skel-label" style="top:25%;left:2%">← Wing Metacarpal</div>
+            <div class="skel-label" style="top:35%;right:2%">Rib Lattice →</div>
+            <div class="skel-label" style="top:55%;left:5%">← Pelvic Basin</div>
+            <div class="skel-label" style="top:75%;right:2%">Caudal Spine →</div>
+          </div>
+        </div>
+
+        <!-- Mid Transition SVG -->
+        <div class="skeleton-panel" id="skel-transition">
+          <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" class="skeleton-svg">
+            <defs>
+              <filter id="glow-orange">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <g filter="url(#glow-orange)" stroke="#ff8844" fill="none" stroke-width="1.5">
+              <!-- Semi-humanoid skull - elongated -->
+              <ellipse cx="200" cy="55" rx="32" ry="35"/>
+              <path d="M178,72 Q200,85 222,72"/><!-- jaw -->
+              <path d="M188,28 Q183,15 186,8"/><!-- vestigial horn -->
+              <path d="M212,28 Q217,15 214,8"/><!-- vestigial horn -->
+              <!-- Elongated neck -->
+              <path d="M200,88 L200,135"/>
+              <ellipse cx="200" cy="105" rx="10" ry="6"/>
+              <ellipse cx="200" cy="120" rx="10" ry="6"/>
+              <!-- Shoulders broadening -->
+              <path d="M200,135 L140,145"/>
+              <path d="M200,135 L260,145"/>
+              <!-- Partially folded wing remnants -->
+              <path d="M140,145 Q100,130 75,120 Q60,115 55,125 Q60,140 80,145"/>
+              <path d="M260,145 Q300,130 325,120 Q340,115 345,125 Q340,140 320,145"/>
+              <!-- Ribcage more humanoid -->
+              <ellipse cx="200" cy="180" rx="50" ry="55"/>
+              <path d="M155,165 Q135,165 130,185 Q135,205 155,200"/>
+              <path d="M155,175 Q138,175 134,192 Q138,208 155,205"/>
+              <path d="M245,165 Q265,165 270,185 Q265,205 245,200"/>
+              <path d="M245,175 Q262,175 266,192 Q262,208 245,205"/>
+              <!-- Pelvis humanoid -->
+              <path d="M175,255 Q200,245 225,255 Q235,270 225,285 Q200,290 175,285 Q165,270 175,255Z"/>
+              <!-- Arms (ex-wing arms) -->
+              <path d="M140,145 Q120,180 110,220"/>
+              <ellipse cx="115" cy="205" rx="7" ry="12"/>
+              <path d="M110,220 Q105,255 100,280"/>
+              <path d="M100,280 L92,294 M100,280 L97,296 M100,280 L102,296 M100,280 L108,292"/>
+              <path d="M260,145 Q280,180 290,220"/>
+              <ellipse cx="285" cy="205" rx="7" ry="12"/>
+              <path d="M290,220 Q295,255 300,280"/>
+              <path d="M300,280 L292,294 M300,280 L297,296 M300,280 L302,296 M300,280 L308,292"/>
+              <!-- Legs -->
+              <path d="M185,285 Q175,320 170,360"/>
+              <ellipse cx="173" cy="345" rx="8" ry="14"/>
+              <path d="M170,360 Q168,385 170,405"/>
+              <path d="M215,285 Q225,320 230,360"/>
+              <ellipse cx="227" cy="345" rx="8" ry="14"/>
+              <path d="M230,360 Q232,385 230,405"/>
+              <!-- Vestigial tail -->
+              <path d="M200,285 Q215,310 220,340 Q218,360 210,355" stroke-dasharray="5,3"/>
+            </g>
+            <text x="200" y="490" text-anchor="middle" fill="#ff8844" font-size="12" font-family="Rajdhani">TRANSITIONAL PHASE — MORPHIC FLUX</text>
+          </svg>
+          <div class="skel-labels">
+            <div class="skel-label" style="top:3%;left:5%">Retracting Horn →</div>
+            <div class="skel-label" style="top:22%;left:2%">← Wing Reduction</div>
+            <div class="skel-label" style="top:40%;right:2%">Rib Compression →</div>
+            <div class="skel-label" style="top:60%;left:5%">← Bipedal Pelvis</div>
+            <div class="skel-label" style="top:80%;right:2%">Tail Vestige →</div>
+          </div>
+        </div>
+
+        <!-- Human Skeleton SVG -->
+        <div class="skeleton-panel" id="skel-human">
+          <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" class="skeleton-svg">
+            <defs>
+              <filter id="glow-blue">
+                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <g filter="url(#glow-blue)" stroke="#4488ff" fill="none" stroke-width="1.5">
+              <!-- Human skull -->
+              <ellipse cx="200" cy="55" rx="35" ry="38"/>
+              <path d="M175,75 Q200,90 225,75"/>
+              <path d="M185,78 L183,90 M193,82 L191,93 M207,82 L209,93 M215,78 L217,90"/>
+              <!-- Neck -->
+              <path d="M200,92 L200,130"/>
+              <ellipse cx="200" cy="103" rx="9" ry="5"/>
+              <ellipse cx="200" cy="116" rx="9" ry="5"/>
+              <!-- Shoulders -->
+              <path d="M200,130 L145,138"/>
+              <path d="M200,130 L255,138"/>
+              <ellipse cx="143" cy="140" rx="10" ry="10"/>
+              <ellipse cx="257" cy="140" rx="10" ry="10"/>
+              <!-- Ribcage - human -->
+              <ellipse cx="200" cy="185" rx="48" ry="58"/>
+              <path d="M155,165 Q130,165 125,185 Q130,205 155,200"/>
+              <path d="M155,174 Q132,174 128,192 Q132,208 155,205"/>
+              <path d="M155,183 Q134,183 131,199 Q134,213 155,210"/>
+              <path d="M245,165 Q270,165 275,185 Q270,205 245,200"/>
+              <path d="M245,174 Q268,174 272,192 Q268,208 245,205"/>
+              <path d="M245,183 Q266,183 269,199 Q266,213 245,210"/>
+              <!-- Sternum -->
+              <path d="M200,145 L200,215"/>
+              <!-- Arms -->
+              <path d="M143,145 Q120,185 115,225"/>
+              <ellipse cx="118" cy="213" rx="8" ry="12"/>
+              <path d="M115,225 Q108,260 105,290"/>
+              <path d="M105,290 L97,303 M105,290 L101,305 M105,290 L107,305 M105,290 L113,302"/>
+              <path d="M257,145 Q280,185 285,225"/>
+              <ellipse cx="282" cy="213" rx="8" ry="12"/>
+              <path d="M285,225 Q292,260 295,290"/>
+              <path d="M295,290 L287,303 M295,290 L291,305 M295,290 L297,305 M295,290 L303,302"/>
+              <!-- Human pelvis -->
+              <path d="M170,258 Q200,248 230,258 Q242,275 230,295 Q200,302 170,295 Q158,275 170,258Z"/>
+              <!-- Legs -->
+              <path d="M183,295 Q175,335 173,375"/>
+              <ellipse cx="174" cy="358" rx="9" ry="14"/>
+              <path d="M173,375 Q172,400 173,418"/>
+              <path d="M173,418 L163,432 M173,418 L168,434 M173,418 L174,434 M173,418 L181,432"/>
+              <path d="M217,295 Q225,335 227,375"/>
+              <ellipse cx="226" cy="358" rx="9" ry="14"/>
+              <path d="M227,375 Q228,400 227,418"/>
+              <path d="M227,418 L217,432 M227,418 L222,434 M227,418 L228,434 M227,418 L235,432"/>
+              <!-- Spine -->
+              <path d="M200,92 L200,258" stroke-dasharray="8,3"/>
+              <!-- Dragon vestige markers (subtle) -->
+              <path d="M200,20 L200,12" stroke-dasharray="2,2" opacity="0.3"/><!-- horn stub -->
+              <path d="M153,138 Q135,130 120,125" stroke-dasharray="2,2" opacity="0.3"/><!-- wing stub -->
+            </g>
+            <text x="200" y="490" text-anchor="middle" fill="#4488ff" font-size="12" font-family="Rajdhani">HOMO DRACONIS — CONCEALED FORM</text>
+          </svg>
+          <div class="skel-labels">
+            <div class="skel-label" style="top:2%;left:5%">Horn Stub (vestigial) →</div>
+            <div class="skel-label" style="top:20%;left:2%">← Wing Root (hidden)</div>
+            <div class="skel-label" style="top:38%;right:2%">Human Ribcage →</div>
+            <div class="skel-label" style="top:55%;left:5%">← Bipedal Hip</div>
+            <div class="skel-label" style="top:76%;right:2%">No Tail →</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transformation info panel -->
+      <div class="poly-info">
+        <h3>The Polymorphic Process</h3>
+        <div class="poly-steps">
+          <div class="poly-step">
+            <div class="ps-num">01</div>
+            <div class="ps-text">
+              <h4>Skeletal Compression</h4>
+              <p>Dragon bones — hollow and lightweight for flight — compress via specialised <em>Osteoblastic Hyperregeneration</em>. The 6-limb structure (4 legs + 2 wings) collapses to 4 limbs. Wing metacarpals fold inward and are absorbed into the shoulder blades as vestigial scapular ridges.</p>
+            </div>
+          </div>
+          <div class="poly-step">
+            <div class="ps-num">02</div>
+            <div class="ps-text">
+              <h4>Neural Rewiring</h4>
+              <p>The dragon's enlarged olfactory and thermal-detection lobes compress. Cranial volume reduces but neural density increases. IQ equivalent paradoxically remains at peak level. The fire-gland nerve cluster enters dormancy, creating the human appendix analogue.</p>
+            </div>
+          </div>
+          <div class="poly-step">
+            <div class="ps-num">03</div>
+            <div class="ps-text">
+              <h4>Dermal Metamorphosis</h4>
+              <p>Dragon scales — keratin-based armour plates 8cm thick — undergo reverse keratinization. The scale-generating cells enter a latent state beneath human epidermis. Under extreme stress, a polymorphed dragon may involuntarily partially re-scale, revealing their true nature.</p>
+            </div>
+          </div>
+          <div class="poly-step">
+            <div class="ps-num">04</div>
+            <div class="ps-text">
+              <h4>Telltale Signs</h4>
+              <p>A dragon in human form retains several anomalies: slit-pupil eyes in certain light, body temperature 2°C above human norm, exceptional bone density, slight iridescence of skin in UV light, and an unconscious hoarding behavior of precious metals.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MYTHICAL BEINGS SECTION -->
+  <section class="mythical-section" id="mythical">
+    <div class="section-header">
+      <p class="section-eyebrow">Xenomythology</p>
+      <h2 class="section-title">Mythical Beings of Dragon Blood</h2>
+      <p class="section-desc">Creatures across world mythology who share draconic origins, anatomy or essence.</p>
+    </div>
+    <div class="mythical-grid">
+      <div class="myth-card" style="--accent:#ff6600">
+        <div class="myth-symbol">🔥</div>
+        <h4>Salamander</h4>
+        <p>Medieval alchemy believed the salamander to be an elemental fire-lizard, born from and immune to flame — a proto-dragon of fire incarnate. Paracelsus classified it as a genuine elemental being.</p>
+        <div class="myth-origin">Alchemical Europe</div>
+      </div>
+      <div class="myth-card" style="--accent:#00ccff">
+        <div class="myth-symbol">🦅</div>
+        <h4>Garuda</h4>
+        <p>The great Hindu/Buddhist divine eagle — enemy and controller of Nagas (serpent-dragons). A being of solar fire, gold-feathered and immense. Often depicted battling dragon-serpents. A winged divine predator, the celestial counterpart to the earth dragon.</p>
+        <div class="myth-origin">Hindu-Buddhist</div>
+      </div>
+      <div class="myth-card" style="--accent:#aa44ff">
+        <div class="myth-symbol">🌀</div>
+        <h4>Ouroboros</h4>
+        <p>The serpent-dragon devouring its own tail — the oldest known draconic symbol, found in Egyptian tomb art 1350 BCE. Represents the eternal cycle of creation and destruction, time without end. Jung identified it as the primordial unconscious dragon archetype.</p>
+        <div class="myth-origin">Egypt / Universal</div>
+      </div>
+      <div class="myth-card" style="--accent:#00ff88">
+        <div class="myth-symbol">🐍</div>
+        <h4>Quetzalcoatl</h4>
+        <p>The Feathered Serpent of Mesoamerica — a winged, feathered dragon-deity of wind, air and learning. Arguably the most culturally complex dragon being: simultaneously creator deity, civilizing hero, and doomsday omen. Every major Aztec city contained a pyramid temple to this dragon-god.</p>
+        <div class="myth-origin">Aztec / Maya</div>
+      </div>
+      <div class="myth-card" style="--accent:#ffdd00">
+        <div class="myth-symbol">🌩️</div>
+        <h4>Thunderbird</h4>
+        <p>The colossal storm-bird of North American indigenous peoples — summoning lightning with its wings, rainfall with its beak. Cryptozoologists link fossil evidence of enormous pterosaur-like creatures to Thunderbird sightings. A feathered dragon analog in every functional sense.</p>
+        <div class="myth-origin">Native American</div>
+      </div>
+      <div class="myth-card" style="--accent:#ff2244">
+        <div class="myth-symbol">👁️</div>
+        <h4>Basilisk</h4>
+        <p>The King of Serpents — a crested dragon-serpent whose gaze petrifies and whose breath kills all vegetation. From Pliny the Elder to Harry Potter, the basilisk occupies the terrifying intersection of dragon and death — a draconic being of pure lethal malice.</p>
+        <div class="myth-origin">Roman / Medieval</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-dragon">
+      <svg viewBox="0 0 300 80" xmlns="http://www.w3.org/2000/svg">
+        <text x="150" y="50" text-anchor="middle" fill="#c8a96e" font-size="11" font-family="Cinzel" opacity="0.4">✦ DRACONIS ENCYCLOPEDIA ✦ ALL DRAGON LORE IS ANCIENT ✦ ALL FIRE IS ETERNAL ✦</text>
+      </svg>
+    </div>
+    <p class="footer-credit">Crafted in the Ancient Forge · © DRACONIS MMXXVI</p>
+  </footer>
+
+  <script>// ============================================
+//   DRACONIS — Main JavaScript
+// ============================================
+
+(function() {
+  'use strict';
+
+  // ===== LOADER =====
+  const loader = document.getElementById('loader');
+  const loaderFill = document.getElementById('loaderFill');
+  let progress = 0;
+
+  const loadInterval = setInterval(() => {
+    progress += Math.random() * 18;
+    if (progress >= 100) {
+      progress = 100;
+      loaderFill.style.width = '100%';
+      clearInterval(loadInterval);
+      setTimeout(() => {
+        loader.classList.add('hidden');
+        document.body.style.overflow = '';
+        initAll();
+      }, 600);
+    } else {
+      loaderFill.style.width = progress + '%';
+    }
+  }, 120);
+
+  document.body.style.overflow = 'hidden';
+
+  // ===== CUSTOM CURSOR =====
+  const cursor = document.getElementById('cursor');
+  const trail = document.getElementById('cursorTrail');
+  let mouseX = 0, mouseY = 0;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    cursor.style.left = mouseX + 'px';
+    cursor.style.top = mouseY + 'px';
+    setTimeout(() => {
+      trail.style.left = mouseX + 'px';
+      trail.style.top = mouseY + 'px';
+    }, 80);
+  });
+
+  document.addEventListener('mousedown', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(1.6)';
+    cursor.style.background = 'rgba(255,102,0,0.3)';
+  });
+  document.addEventListener('mouseup', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+    cursor.style.background = 'transparent';
+  });
+
+  // Cursor hover effects
+  document.querySelectorAll('a, button, .culture-card, .myth-card, .tab-btn, .poly-stage, .species-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'translate(-50%,-50%) scale(2)';
+      cursor.style.borderColor = '#ffaa00';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+      cursor.style.borderColor = '#ff6600';
+    });
+  });
+
+  // ===== STAR FIELD =====
+  function createStars() {
+    const starField = document.createElement('div');
+    starField.className = 'star-field';
+    document.body.appendChild(starField);
+    for (let i = 0; i < 120; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      const size = Math.random() * 2 + 0.5;
+      star.style.cssText = `
+        width:${size}px;height:${size}px;
+        left:${Math.random()*100}%;top:${Math.random()*100}%;
+        --dur:${2+Math.random()*4}s;--delay:${Math.random()*5}s;
+        --max-op:${0.3+Math.random()*0.4};
+        opacity:0.1;
+      `;
+      starField.appendChild(star);
+    }
+  }
+
+  // ===== NAVIGATION =====
+  function initNav() {
+    const nav = document.getElementById('nav');
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    navToggle.addEventListener('click', () => {
+      navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+      navLinks.style.flexDirection = 'column';
+      navLinks.style.position = 'fixed';
+      navLinks.style.top = '70px';
+      navLinks.style.right = '24px';
+      navLinks.style.background = 'rgba(5,2,10,0.97)';
+      navLinks.style.padding = '20px 32px';
+      navLinks.style.border = '1px solid rgba(200,169,110,0.2)';
+      navLinks.style.gap = '16px';
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+        if (navLinks.style.display === 'flex' && window.innerWidth < 768) {
+          navLinks.style.display = 'none';
+        }
+      });
+    });
+  }
+
+  // ===== SCROLL REVEAL =====
+  function initScrollReveal() {
+    const toReveal = document.querySelectorAll(
+      '.culture-card, .species-card, .evo-card, .myth-card, .poly-step, .science-box, .section-header'
+    );
+
+    toReveal.forEach(el => el.classList.add('reveal'));
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    toReveal.forEach(el => observer.observe(el));
+  }
+
+  // ===== DNA BARS ANIMATION =====
+  function initDNABars() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.culture-card').forEach(card => observer.observe(card));
+  }
+
+  // ===== TABS =====
+  function initTabs() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('tab-' + tab).classList.add('active');
+      });
+    });
+  }
+
+  // ===== POLYMORPHISM SKELETON SWITCHER =====
+  function initPolymorphism() {
+    const stages = document.querySelectorAll('.poly-stage');
+    const panels = document.querySelectorAll('.skeleton-panel');
+
+    stages.forEach(stage => {
+      stage.addEventListener('click', () => {
+        const target = stage.dataset.poly;
+        stages.forEach(s => s.classList.remove('active'));
+        stage.classList.add('active');
+        panels.forEach(p => {
+          p.classList.remove('active');
+          if (p.id === 'skel-' + target) p.classList.add('active');
+        });
+        // Glow color based on form
+        const colors = { dragon: '#c8a96e', transition: '#ff8844', human: '#4488ff' };
+        document.documentElement.style.setProperty('--poly-glow', colors[target] || '#c8a96e');
+      });
+    });
+  }
+
+  // ===== SCROLL-BASED DRAGON FIRE =====
+  function initScrollFire() {
+    const fireStreams = document.querySelectorAll('.fire-stream');
+    let lastScroll = 0;
+    let fireActive = false;
+    let fireTimeout;
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      const delta = currentScroll - lastScroll;
+      lastScroll = currentScroll;
+
+      if (Math.abs(delta) > 5) {
+        if (!fireActive) {
+          fireActive = true;
+          fireStreams.forEach(stream => {
+            stream.style.opacity = '1';
+            stream.style.strokeDashoffset = '0';
+          });
+        }
+        clearTimeout(fireTimeout);
+        fireTimeout = setTimeout(() => {
+          fireActive = false;
+          fireStreams.forEach(stream => {
+            stream.style.opacity = '0';
+          });
+        }, 500);
+      }
+    });
+  }
+
+  // ===== EMBER PARTICLES =====
+  function createEmbers() {
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+    for (let i = 0; i < 20; i++) {
+      const ember = document.createElement('div');
+      ember.className = 'ember-particle';
+      ember.style.cssText = `
+        left: ${Math.random() * 60 + 20}%;
+        bottom: 20%;
+        --dur: ${1.5 + Math.random() * 2}s;
+        --delay: ${Math.random() * 3}s;
+        background: hsl(${20 + Math.random() * 30}, 100%, ${50 + Math.random() * 30}%);
+        width: ${2 + Math.random() * 4}px;
+        height: ${2 + Math.random() * 4}px;
+        opacity: 0;
+      `;
+      hero.appendChild(ember);
+    }
+  }
+
+  // ===== SECTION BACKGROUND PARALLAX =====
+  function initParallax() {
+    const sections = document.querySelectorAll('section');
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const offset = (scrollY - sectionTop) * 0.15;
+        if (Math.abs(scrollY - sectionTop) < window.innerHeight * 1.5) {
+          section.style.backgroundPositionY = `${offset}px`;
+        }
+      });
+    });
+  }
+
+  // ===== DRAGON SVG GLOW ON SCROLL =====
+  function initDragonGlow() {
+    const dragonSvg = document.querySelector('#heroSvgDragon');
+    if (!dragonSvg) return;
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const intensity = Math.min(scrolled / 300, 1);
+      dragonSvg.style.filter = `drop-shadow(0 0 ${30 + intensity * 50}px rgba(200,100,0,${0.3 + intensity * 0.5}))`;
+    });
+  }
+
+  // ===== MOUSE PARALLAX HERO =====
+  function initMouseParallax() {
+    const dragonContainer = document.getElementById('scrollDragon');
+    const heroContent = document.querySelector('.hero-content');
+    if (!dragonContainer) return;
+
+    document.querySelector('.hero').addEventListener('mousemove', (e) => {
+      const rect = document.querySelector('.hero').getBoundingClientRect();
+      const xPct = (e.clientX - rect.left) / rect.width - 0.5;
+      const yPct = (e.clientY - rect.top) / rect.height - 0.5;
+
+      dragonContainer.style.transform = `translateY(${20 + yPct * 20}px) translateX(${xPct * 15}px) rotate(${yPct * -2}deg)`;
+      if (heroContent) {
+        heroContent.style.transform = `translateX(${xPct * -8}px) translateY(${yPct * -5}px)`;
+      }
+    });
+  }
+
+  // ===== CULTURE CARD 3D TILT =====
+  function initCardTilt() {
+    document.querySelectorAll('.culture-card, .myth-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const xPct = (e.clientX - rect.left) / rect.width - 0.5;
+        const yPct = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `translateY(-8px) rotateX(${yPct * -6}deg) rotateY(${xPct * 6}deg)`;
+        card.style.transformStyle = 'preserve-3d';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+        card.style.transformStyle = '';
+      });
+    });
+  }
+
+  // ===== INIT ALL =====
+  function initAll() {
+    createStars();
+    initNav();
+    initScrollReveal();
+    initDNABars();
+    initTabs();
+    initPolymorphism();
+    initScrollFire();
+    createEmbers();
+    initDragonGlow();
+    initMouseParallax();
+    initCardTilt();
+  }
+
+})();
+</script>
+  <script>// ============================================
+//   DRACONIS — Fire Canvas Animation
+//   Real particle fire system for hero bg
+// ============================================
+
+(function() {
+  'use strict';
+
+  const canvas = document.getElementById('fireCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let W = canvas.width = window.innerWidth;
+  let H = canvas.height = window.innerHeight;
+  let particles = [];
+  let frameCount = 0;
+  let scrollIntensity = 0;
+  let isScrolling = false;
+  let scrollTimer;
+  let lastScrollY = 0;
+
+  window.addEventListener('resize', () => {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  });
+
+  window.addEventListener('scroll', () => {
+    const delta = Math.abs(window.scrollY - lastScrollY);
+    lastScrollY = window.scrollY;
+    scrollIntensity = Math.min(delta * 0.04, 1);
+    isScrolling = true;
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => {
+      isScrolling = false;
+      scrollIntensity = 0;
+    }, 400);
+  });
+
+  // ===== FIRE PARTICLE CLASS =====
+  class FireParticle {
+    constructor(x, y, type = 'base') {
+      this.reset(x, y, type);
+    }
+
+    reset(x, y, type) {
+      this.type = type;
+      this.x = x + (Math.random() - 0.5) * 60;
+      this.y = y;
+      this.vx = (Math.random() - 0.5) * 1.5;
+      this.vy = -(Math.random() * 3 + 1.5);
+      this.life = 0;
+      this.maxLife = Math.random() * 80 + 60;
+      this.size = Math.random() * 18 + 8;
+      this.initialSize = this.size;
+      this.hue = Math.random() * 30 + 10; // 10-40 (red-orange-yellow)
+      this.sat = 100;
+      this.lit = 50 + Math.random() * 20;
+      this.wobble = Math.random() * Math.PI * 2;
+      this.wobbleSpeed = Math.random() * 0.08 + 0.02;
+    }
+
+    update() {
+      this.life++;
+      this.wobble += this.wobbleSpeed;
+      const progress = this.life / this.maxLife;
+
+      this.x += this.vx + Math.sin(this.wobble) * 0.8;
+      this.y += this.vy;
+      this.vy *= 0.985;
+      this.vx *= 0.97;
+
+      // Rise acceleration
+      if (progress < 0.3) this.vy -= 0.04;
+
+      // Size shrinks as it rises
+      this.size = this.initialSize * (1 - progress * 0.7);
+
+      // Hue shifts to yellow/white at top
+      this.hue = 10 + progress * 40;
+      this.lit = 50 + progress * 35;
+
+      return this.life < this.maxLife && this.size > 0.5;
+    }
+
+    draw(ctx) {
+      const progress = this.life / this.maxLife;
+      const alpha = progress < 0.1 ? progress * 10 : progress > 0.7 ? (1 - progress) / 0.3 : 1;
+
+      const gradient = ctx.createRadialGradient(
+        this.x, this.y, 0,
+        this.x, this.y, this.size
+      );
+      gradient.addColorStop(0, `hsla(${this.hue + 20}, ${this.sat}%, ${this.lit + 20}%, ${alpha})`);
+      gradient.addColorStop(0.4, `hsla(${this.hue}, ${this.sat}%, ${this.lit}%, ${alpha * 0.8})`);
+      gradient.addColorStop(1, `hsla(${this.hue - 10}, ${this.sat}%, 30%, 0)`);
+
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // ===== EMBER CLASS =====
+  class Ember {
+    constructor(x, y) {
+      this.x = x + (Math.random() - 0.5) * 80;
+      this.y = y;
+      this.vx = (Math.random() - 0.5) * 3;
+      this.vy = -(Math.random() * 5 + 3);
+      this.life = 0;
+      this.maxLife = Math.random() * 120 + 80;
+      this.size = Math.random() * 3 + 1;
+      this.hue = Math.random() * 30 + 15;
+    }
+
+    update() {
+      this.life++;
+      this.x += this.vx + (Math.random() - 0.5) * 0.5;
+      this.y += this.vy;
+      this.vy *= 0.99;
+      this.vy += (Math.random() - 0.5) * 0.1;
+      this.vx += (Math.random() - 0.5) * 0.15;
+      return this.life < this.maxLife;
+    }
+
+    draw(ctx) {
+      const progress = this.life / this.maxLife;
+      const alpha = (1 - progress) * 0.9;
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size * (1 - progress * 0.5), 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${this.hue}, 100%, ${60 + progress * 20}%, ${alpha})`;
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // ===== SMOKE CLASS =====
+  class Smoke {
+    constructor(x, y) {
+      this.x = x + (Math.random() - 0.5) * 40;
+      this.y = y;
+      this.vx = (Math.random() - 0.5) * 0.8;
+      this.vy = -(Math.random() * 1 + 0.5);
+      this.life = 0;
+      this.maxLife = Math.random() * 200 + 100;
+      this.size = Math.random() * 30 + 15;
+      this.rotation = Math.random() * Math.PI * 2;
+    }
+
+    update() {
+      this.life++;
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vx += (Math.random() - 0.5) * 0.05;
+      this.size += 0.3;
+      this.rotation += 0.005;
+      return this.life < this.maxLife;
+    }
+
+    draw(ctx) {
+      const progress = this.life / this.maxLife;
+      const alpha = progress < 0.1 ? 0 : (1 - progress) * 0.06;
+      ctx.save();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotation);
+      const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, this.size);
+      grad.addColorStop(0, `rgba(40,20,60,${alpha})`);
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.beginPath();
+      ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // ===== FIRE SOURCE POINTS =====
+  const fireSources = [
+    { x: 0.5, y: 1.05, intensity: 1.0, type: 'main' },      // center bottom
+    { x: 0.3, y: 1.1, intensity: 0.5, type: 'secondary' },  // left
+    { x: 0.7, y: 1.1, intensity: 0.5, type: 'secondary' },  // right
+    { x: 0.15, y: 1.15, intensity: 0.25, type: 'accent' },  // far left
+    { x: 0.85, y: 1.15, intensity: 0.25, type: 'accent' },  // far right
+  ];
+
+  // ===== SPAWN PARTICLES =====
+  function spawnParticles() {
+    const baseRate = 3;
+    const scrollBoost = isScrolling ? scrollIntensity * 8 : 0;
+    const totalRate = baseRate + scrollBoost;
+
+    fireSources.forEach(source => {
+      const count = Math.ceil(totalRate * source.intensity);
+      for (let i = 0; i < count; i++) {
+        if (Math.random() < 0.85) {
+          particles.push({
+            type: 'fire',
+            obj: new FireParticle(source.x * W, source.y * H)
+          });
+        }
+        if (Math.random() < 0.15) {
+          particles.push({
+            type: 'ember',
+            obj: new Ember(source.x * W, source.y * H)
+          });
+        }
+        if (Math.random() < 0.05) {
+          particles.push({
+            type: 'smoke',
+            obj: new Smoke(source.x * W, source.y * H - 20)
+          });
+        }
+      }
+    });
+
+    // Limit particle count
+    const maxParticles = 600;
+    if (particles.length > maxParticles) {
+      particles.splice(0, particles.length - maxParticles);
+    }
+  }
+
+  // ===== DRAW GROUND GLOW =====
+  function drawGroundGlow() {
+    const time = frameCount * 0.02;
+    const pulse = 0.8 + Math.sin(time) * 0.2;
+
+    const glow = ctx.createRadialGradient(
+      W * 0.5, H,
+      0,
+      W * 0.5, H,
+      W * 0.6
+    );
+    glow.addColorStop(0, `rgba(255, 80, 0, ${0.18 * pulse})`);
+    glow.addColorStop(0.3, `rgba(180, 40, 0, ${0.08 * pulse})`);
+    glow.addColorStop(0.7, `rgba(80, 10, 0, ${0.03 * pulse})`);
+    glow.addColorStop(1, 'rgba(0,0,0,0)');
+
+    ctx.save();
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, H);
+    ctx.restore();
+  }
+
+  // ===== DRAW SCROLL BURST =====
+  function drawScrollBurst() {
+    if (scrollIntensity <= 0) return;
+    const burstX = W * 0.5;
+    const burstY = H;
+    const burst = ctx.createRadialGradient(burstX, burstY, 0, burstX, burstY, W * 0.4 * scrollIntensity);
+    burst.addColorStop(0, `rgba(255,200,0,${scrollIntensity * 0.3})`);
+    burst.addColorStop(0.5, `rgba(255,80,0,${scrollIntensity * 0.15})`);
+    burst.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.save();
+    ctx.fillStyle = burst;
+    ctx.fillRect(0, 0, W, H);
+    ctx.restore();
+  }
+
+  // ===== VIGNETTE =====
+  function drawVignette() {
+    const vignette = ctx.createRadialGradient(W/2, H/2, H * 0.2, W/2, H/2, H);
+    vignette.addColorStop(0, 'transparent');
+    vignette.addColorStop(1, 'rgba(5, 2, 10, 0.7)');
+    ctx.save();
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, W, H);
+    ctx.restore();
+  }
+
+  // ===== MAIN LOOP =====
+  function loop() {
+    requestAnimationFrame(loop);
+    frameCount++;
+
+    ctx.clearRect(0, 0, W, H);
+
+    drawGroundGlow();
+    drawScrollBurst();
+    spawnParticles();
+
+    // Sort: smoke first, fire, embers on top
+    particles.sort((a, b) => {
+      const order = { smoke: 0, fire: 1, ember: 2 };
+      return order[a.type] - order[b.type];
+    });
+
+    particles = particles.filter(p => {
+      const alive = p.obj.update();
+      if (alive) p.obj.draw(ctx);
+      return alive;
+    });
+
+    drawVignette();
+  }
+
+  loop();
+
+})();
+</script>
+  <script>// ============================================
+//   DRACONIS — Scroll & Visual Animations
+// ============================================
+
+(function() {
+  'use strict';
+
+  // ===== SCROLL-DRIVEN DRAGON FIRE (SVG) =====
+  function initSVGFire() {
+    const fireStreams = document.querySelectorAll('.fire-stream');
+    let lastScrollY = window.scrollY;
+    let isAnimating = false;
+    let activeAnimation = null;
+
+    function animateFire(intensity) {
+      fireStreams.forEach((stream, i) => {
+        stream.style.transition = 'opacity 0.15s';
+        stream.style.opacity = String(Math.min(intensity * (1 - i * 0.15), 1));
+        stream.style.strokeWidth = String(10 - i * 2.5);
+      });
+    }
+
+    function clearFire() {
+      fireStreams.forEach(stream => {
+        stream.style.opacity = '0';
+      });
+      isAnimating = false;
+    }
+
+    let clearTimeout_id = null;
+
+    window.addEventListener('scroll', () => {
+      const delta = Math.abs(window.scrollY - lastScrollY);
+      lastScrollY = window.scrollY;
+
+      const intensity = Math.min(delta / 30, 1);
+      if (intensity > 0.05) {
+        animateFire(intensity);
+        clearTimeout(clearTimeout_id);
+        clearTimeout_id = setTimeout(clearFire, 300);
+      }
+    }, { passive: true });
+  }
+
+  // ===== TYPED TEXT EFFECT FOR HERO DESC =====
+  function initHeroReveal() {
+    // After loader done, reveal hero elements with stagger
+    const elems = document.querySelectorAll('.hero-eyebrow, .title-line, .title-sub, .hero-desc, .cta-btn');
+    // Already handled by CSS animations - just ensure they're visible
+  }
+
+  // ===== SECTION ENTRANCE EFFECTS =====
+  function initSectionEffects() {
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          // Trigger child animations
+          const children = entry.target.querySelectorAll('.reveal');
+          children.forEach((child, i) => {
+            setTimeout(() => child.classList.add('visible'), i * 80);
+          });
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('section').forEach(s => sectionObserver.observe(s));
+  }
+
+  // ===== PROGRESS BAR (reading progress) =====
+  function initProgressBar() {
+    const bar = document.createElement('div');
+    bar.style.cssText = `
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, #ff2200, #ff6600, #ffdd00);
+      z-index: 9999;
+      transition: width 0.1s linear;
+      pointer-events: none;
+    `;
+    document.body.appendChild(bar);
+
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / docHeight) * 100;
+      bar.style.width = progress + '%';
+    }, { passive: true });
+  }
+
+  // ===== GLITCH EFFECT ON TITLE =====
+  function initGlitch() {
+    const title = document.querySelector('.title-line');
+    if (!title) return;
+
+    setInterval(() => {
+      if (Math.random() > 0.92) {
+        title.style.textShadow = `
+          ${(Math.random()-0.5)*6}px 0 rgba(255,0,0,0.7),
+          ${(Math.random()-0.5)*6}px 0 rgba(0,200,255,0.7)
+        `;
+        title.style.transform = `skewX(${(Math.random()-0.5)*3}deg)`;
+        setTimeout(() => {
+          title.style.textShadow = '';
+          title.style.transform = '';
+        }, 80);
+      }
+    }, 2000);
+  }
+
+  // ===== FIRE TRAIL ON MOUSE =====
+  function initMouseFireTrail() {
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+    let lastX = 0, lastY = 0;
+
+    hero.addEventListener('mousemove', (e) => {
+      const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist > 20) {
+        createMouseSpark(e.clientX, e.clientY);
+        lastX = e.clientX;
+        lastY = e.clientY;
+      }
+    });
+
+    function createMouseSpark(x, y) {
+      const spark = document.createElement('div');
+      spark.style.cssText = `
+        position: fixed;
+        left: ${x}px;
+        top: ${y}px;
+        width: ${4 + Math.random()*6}px;
+        height: ${4 + Math.random()*6}px;
+        background: hsl(${10+Math.random()*40},100%,${50+Math.random()*30}%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9997;
+        transform: translate(-50%,-50%);
+        animation: sparkFade 0.6s ease forwards;
+      `;
+      document.body.appendChild(spark);
+      setTimeout(() => spark.remove(), 600);
+    }
+
+    // Inject spark CSS
+    if (!document.getElementById('sparkStyle')) {
+      const style = document.createElement('style');
+      style.id = 'sparkStyle';
+      style.textContent = `
+        @keyframes sparkFade {
+          0% { transform: translate(-50%,-50%) scale(1); opacity:1; }
+          50% { transform: translate(-50%,-50%) scale(1.5) translateY(-10px); opacity:0.8; }
+          100% { transform: translate(-50%,-50%) scale(0.2) translateY(-20px); opacity:0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+
+  // ===== CULTURE CARD DATA ATTRIBUTE COLORS =====
+  function initCultureColors() {
+    const colorMap = {
+      chinese: { primary: '#ff9900', glow: 'rgba(255,150,0,0.3)' },
+      indian: { primary: '#aa44ff', glow: 'rgba(170,68,255,0.3)' },
+      western: { primary: '#cc2200', glow: 'rgba(200,34,0,0.3)' }
+    };
+    document.querySelectorAll('.culture-card[data-culture]').forEach(card => {
+      const culture = card.dataset.culture;
+      const colors = colorMap[culture];
+      if (!colors) return;
+      const badge = card.querySelector('.card-badge');
+      if (badge) badge.style.color = badge.style.borderColor = colors.primary;
+      card.addEventListener('mouseenter', () => {
+        card.style.boxShadow = `0 0 40px ${colors.glow}`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.boxShadow = '';
+      });
+    });
+  }
+
+  // ===== SMOOTH COUNTER ANIMATION =====
+  function animateCounters() {
+    // Animate stat numbers if any
+    document.querySelectorAll('[data-count]').forEach(el => {
+      const target = parseInt(el.dataset.count);
+      let current = 0;
+      const step = target / 60;
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = Math.round(current);
+      }, 16);
+    });
+  }
+
+  // ===== EVOLUTION TIMELINE ANIMATION =====
+  function initEvoTimeline() {
+    const evoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const circle = entry.target.querySelector('.evo-circle');
+          if (circle) {
+            circle.style.boxShadow = '0 0 20px rgba(255,102,0,0.6), inset 0 0 10px rgba(255,102,0,0.2)';
+            circle.style.borderColor = '#ffaa00';
+          }
+          entry.target.classList.add('evo-active');
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.evo-node').forEach(node => evoObserver.observe(node));
+  }
+
+  // ===== MYTHICAL CARD TWINKLING STARS =====
+  function initMythicalEffects() {
+    document.querySelectorAll('.myth-card').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        const symbol = card.querySelector('.myth-symbol');
+        if (symbol) {
+          symbol.style.animation = 'dragonFloat 1s ease-in-out infinite';
+        }
+      });
+      card.addEventListener('mouseleave', () => {
+        const symbol = card.querySelector('.myth-symbol');
+        if (symbol) {
+          symbol.style.animation = '';
+        }
+      });
+    });
+  }
+
+  // ===== NAV ACTIVE SECTION HIGHLIGHT =====
+  function initNavHighlight() {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(link => {
+            link.style.color = '';
+            if (link.getAttribute('href') === '#' + entry.target.id) {
+              link.style.color = '#c8a96e';
+            }
+          });
+        }
+      });
+    }, { threshold: 0.4 });
+
+    sections.forEach(s => observer.observe(s));
+  }
+
+  // ===== INIT =====
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      initSVGFire();
+      initSectionEffects();
+      initProgressBar();
+      initGlitch();
+      initMouseFireTrail();
+      initCultureColors();
+      initEvoTimeline();
+      initMythicalEffects();
+      initNavHighlight();
+    }, 800);
+  });
+
+})();
+</script>
+</body>
+</html>
